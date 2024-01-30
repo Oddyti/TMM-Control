@@ -1,3 +1,4 @@
 data/external_force/*.mat
 data/max_displacement/*.mat
 data/metadata/*.mat
+output/*

@@ -89,9 +89,10 @@ addpath('functions');
     end
 
     % Define force name and force function
-    delta_t = 1e-3; T = 1;
+    delta_t = 1e-3; T = 0.5;
     Time = 0:delta_t:T;
-
+    load('D:\GitRepositories\TMM_Control\data\metadata\1.0000_1_1_1_3.mat')
+    present_lattice_deformation_polarization_transformation('test1.gif', U, Time, Coor_unit_cell_x, Coor_unit_cell_y, Alpha, Gamma, Theta, n, m, rotation_kappa, i_alpha, U_entire_name)
     % the loop index of external force
     F_loop_index = generate_f_loop_index(U_entire_name);
 

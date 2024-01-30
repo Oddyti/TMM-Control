@@ -73,7 +73,7 @@
     end
 
 
-%% Drawing
+%% Draw static figure
 
     % Gradient colors setting
     % GRADIENT_COLORS: 6 gradient colors defined for drawing
@@ -92,136 +92,174 @@
 
     % draw F and its response
     % Each F has 29 different value
-    F_index_to_draw = [3,1,1,1]; % the coordinates of the Force to be drawing (less than six)
+    % F_index_to_draw = [3,1,1,1]; % the coordinates of the Force to be drawing (less than six)
+    % F_num = size(F_index_to_draw);
     circle_size = linspace(100, 300, 29);
     circle_size = exp(linspace(-5, -2, 29))*1000;
     F_loop = [1:6, 8:2:20, 25:5:100];
-    F_num = size(F_index_to_draw);
 
+    for each_data = 170:170
+        % Figure 1: draw the max displacement
+        figure('Position',[0,87,2271,777]);
+        subplot(1,3,1);
+
+        minZ = Inf;
+        for i = 1:numel(data)
+            if data(i).F_index == data(each_data).F_index
+                if data(i).max_norm <= minZ
+                    minZ = data(i).max_norm;
+                end
+            end
+        end
+
+        draw_data = draw_response(data(each_data).F_index, data, 1, index_map, F_loop, circle_size, GRADIENT_COLORS, 1, minZ);
+
+        
+        % Draw base cells
+        for i = 1:n + 1
+
+            for j = 1:m
+
+                for k = 1:9
+                    XY_unit(1, k) = Coor_unit_cell_x(i, j, k); XY_unit(2, k) = Coor_unit_cell_y(i, j, k);
+                end
+
+                XY_unit = rotation_kappa * XY_unit;
+
+                if i == 1
+                    plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
+                elseif i == n + 1
+                    plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
+                else
+                    plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
+                    plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
+                end
+
+            end
+
+        end
+        xlim([-3, 7]); ylim([-1, 6]); % zlim([0, 6]);
+        xlabel('X'); ylabel('Y'); zlabel('Max Displacement');
+        grid on;
+        view(-10, 60); % the view of the 3-d figure
+        title('Max Displacement');
+        hold off;
+
+        % Figure 2: draw the max displacement of X direction
+        % figure('Position',[600, 50, 900, 900]);
+
+        subplot(1,3,2);
+        minZ = Inf;
+        for i = 1:numel(data)
+            if data(i).F_index == data(each_data).F_index
+                if data(i).max_x <= minZ
+                    minZ = data(i).max_x;
+                end
+            end
+        end
+
+
+        draw_data = draw_response(data(each_data).F_index, data, 2, index_map, F_loop, circle_size, GRADIENT_COLORS, 1, minZ);
+
+
+        % Draw base cells 
+        for i = 1:n + 1
+
+            for j = 1:m
+
+                for k = 1:9
+                    XY_unit(1, k) = Coor_unit_cell_x(i, j, k); XY_unit(2, k) = Coor_unit_cell_y(i, j, k);
+                end
+
+                XY_unit = rotation_kappa * XY_unit;
+
+                if i == 1
+                    plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
+                elseif i == n + 1
+                    plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
+                else
+                    plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
+                    plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
+                end
+
+            end
+
+        end
+        xlim([-3, 7]); ylim([-1, 6]); % zlim([0, 6]);
+        xlabel('X'); ylabel('Y'); zlabel('Max Displacement');
+        grid on;
+        view(-10, 60); % the view of the 3-d figure
+        title('Max Displacement of X Direction');
+        hold off;
+
+
+        % Figure 3: draw the max displacement of Y direction
+        % figure('Position',[600, 50, 900, 900]);
+
+        subplot(1,3,3);
+        minZ = Inf;
+        for i = 1:numel(data)
+            if data(i).F_index == data(each_data).F_index
+                if data(i).max_y <= minZ
+                    minZ = data(i).max_y;
+                end
+            end
+        end
+
+
+        draw_data = draw_response(data(each_data).F_index, data, 3, index_map, F_loop, circle_size, GRADIENT_COLORS, 1, minZ);
+
+
+        % Draw base cells 
+        for i = 1:n + 1
+
+            for j = 1:m
+
+                for k = 1:9
+                    XY_unit(1, k) = Coor_unit_cell_x(i, j, k); XY_unit(2, k) = Coor_unit_cell_y(i, j, k);
+                end
+
+                XY_unit = rotation_kappa * XY_unit;
+
+                if i == 1
+                    plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
+                elseif i == n + 1
+                    plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
+                else
+                    plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
+                    plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
+                    % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
+                end
+
+            end
+
+        end
+        xlim([-3, 7]); ylim([-1, 6]); % zlim([0, 6]);
+        xlabel('X'); ylabel('Y'); zlabel('Max Displacement');
+        grid on;
+        view(-10, 60); % the view of the 3-d figure
+        title('Max Displacement of Y Direction');
+        hold off;
+
+        F_name = join(string(data(each_data).F_index), '-');
+        sgtitle(strcat('Force-' ,sprintf('%03d', each_data),  ': [', F_name, ']'), 'FontSize', 14);
+        print(strcat('output/analyzed_images/',F_name, '.png'), '-dpng');
+        
+        close all;
+    end
     
-    % Figure 1: draw the max displacement
-    figure('Position',[600, 50, 900, 900]);
-    for i = 1:F_num
-        draw_data = draw_response(F_index_to_draw(i,:), data, 1, index_map, F_loop, circle_size, GRADIENT_COLORS, i);
-    end
-    % Draw base cells 
-    minZ = min([data.max_norm]);
-    for i = 1:n + 1
-
-        for j = 1:m
-
-            for k = 1:9
-                XY_unit(1, k) = Coor_unit_cell_x(i, j, k); XY_unit(2, k) = Coor_unit_cell_y(i, j, k);
-            end
-
-            XY_unit = rotation_kappa * XY_unit;
-
-            if i == 1
-                plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
-            elseif i == n + 1
-                plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
-            else
-                plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
-                plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
-            end
-
-        end
-
-    end
-    xlim([-3, 7]); ylim([-1, 6]); % zlim([0, 6]);
-    xlabel('X'); ylabel('Y'); zlabel('Max Displacement');
-    grid on;
-    view(-10, 60); % the view of the 3-d figure
-    title('Max Displacement');
-    hold off;
-
-    % Figure 2: draw the max displacement of X direction
-    figure('Position',[600, 50, 900, 900]);
-    for i = 1:F_num
-        draw_data = draw_response(F_index_to_draw(i,:), data, 2, index_map, F_loop, circle_size, GRADIENT_COLORS, i);
-    end
-    % Draw base cells 
-    minZ = min([data.max_norm]);
-    for i = 1:n + 1
-
-        for j = 1:m
-
-            for k = 1:9
-                XY_unit(1, k) = Coor_unit_cell_x(i, j, k); XY_unit(2, k) = Coor_unit_cell_y(i, j, k);
-            end
-
-            XY_unit = rotation_kappa * XY_unit;
-
-            if i == 1
-                plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
-            elseif i == n + 1
-                plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
-            else
-                plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
-                plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
-            end
-
-        end
-
-    end
-    xlim([-3, 7]); ylim([-1, 6]); % zlim([0, 6]);
-    xlabel('X'); ylabel('Y'); zlabel('Max Displacement');
-    grid on;
-    view(-10, 60); % the view of the 3-d figure
-    title('Max Displacement of X Direction');
-    hold off;
-
-
-    % Figure 3: draw the max displacement of Y direction
-    figure('Position',[600, 50, 900, 900]);
-    for i = 1:F_num
-        draw_data = draw_response(F_index_to_draw(i,:), data, 3, index_map, F_loop, circle_size, GRADIENT_COLORS, i);
-    end
-
-    % Draw base cells 
-    minZ = min([data.max_norm]);
-    for i = 1:n + 1
-
-        for j = 1:m
-
-            for k = 1:9
-                XY_unit(1, k) = Coor_unit_cell_x(i, j, k); XY_unit(2, k) = Coor_unit_cell_y(i, j, k);
-            end
-
-            XY_unit = rotation_kappa * XY_unit;
-
-            if i == 1
-                plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
-            elseif i == n + 1
-                plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
-            else
-                plot3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, 'color', BASE_COLOR_2, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 1:4), XY_unit(2, 1:4), ones(1, 4)*minZ, BASE_COLOR_2, 'linestyle', 'none'); hold on;
-                plot3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, 'color', BASE_COLOR_1, 'linewidth', 1); hold on;
-                % fill3(XY_unit(1, 4:7), XY_unit(2, 4:7), ones(1, 4)*minZ, BASE_COLOR_1, 'linestyle', 'none'); hold on;
-            end
-
-        end
-
-    end
-    xlim([-3, 7]); ylim([-1, 6]); % zlim([0, 6]);
-    xlabel('X'); ylabel('Y'); zlabel('Max Displacement');
-    grid on;
-    view(-10, 60); % the view of the 3-d figure
-    title('Max Displacement of Y Direction');
-    hold off;
-
-
+    
 
 
 
@@ -231,7 +269,7 @@
 
 
     % Function: Draw the response of different forces
-    function draw_data = draw_response(F_index, data, displacement_type, index_map, F_loop, circle_size, GRADIENT_COLORS, order)
+    function draw_data = draw_response(F_index, data, displacement_type, index_map, F_loop, circle_size, GRADIENT_COLORS, order, minZ)
         % displacement: 
         % 1 => draw max displacement
         % 2 => draw max displacement of x direction
@@ -313,12 +351,12 @@
                 break;
             end
         end
-        scatter3(coor_x, coor_y, min([data.max_norm]),100, GRADIENT_COLORS(end,:,order), "LineWidth",2);
+        scatter3(coor_x, coor_y, minZ,100, GRADIENT_COLORS(end,:,order), "LineWidth",2);
         % Draw arrow
         if F_index(3) == 1
-            quiver3(coor_x,coor_y,min([data.max_norm]),0.5,0,0,'Color', GRADIENT_COLORS(end,:,order), 'LineWidth', 2);
+            quiver3(coor_x,coor_y, minZ,0.5,0,0,'Color', GRADIENT_COLORS(end,:,order), 'LineWidth', 2);
         elseif F_index(3) == 2
-            quiver3(coor_x,coor_y,min([data.max_norm]),0,0.5,0,'Color', GRADIENT_COLORS(end,:,order), 'LineWidth', 2);
+            quiver3(coor_x,coor_y, minZ,0,0.5,0,'Color', GRADIENT_COLORS(end,:,order), 'LineWidth', 2);
         end
         hold on; 
     end
